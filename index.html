@@ -328,9 +328,22 @@
                 spaceSound.volume = 0.15;
                 spaceSound.play().catch(() => { });
 
-                requestGyroPermission();
-
                 typeWriter();
+                if (typeof DeviceOrientationEvent !== "undefined" &&
+                    typeof DeviceOrientationEvent.requestPermission === "function") {
+
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === "granted") {
+                                window.addEventListener("deviceorientation", event => {
+                                    parallaxX = event.gamma * 0.3;
+                                    parallaxY = event.beta * 0.2;
+                                });
+                            }
+                        })
+                        .catch(() => { });
+                }
+
             }
 
             /* ⌨ печатная машинка */
@@ -426,6 +439,28 @@
                 }
             }
 
+            // 🔄 пытаемся включить параллакс сразу
+
+                function initParallaxEarly() {
+
+                    function handleOrientation(event) {
+                        parallaxX = event.gamma * 0.3;
+                        parallaxY = event.beta * 0.2;
+                    }
+
+                    if (typeof DeviceOrientationEvent !== "undefined" &&
+                        typeof DeviceOrientationEvent.requestPermission === "function") {
+
+                        // iPhone — ждём клика
+                        console.log("iOS detected — параллакс включится после нажатия");
+
+                    } else {
+                        // Android — сразу работает
+                        window.addEventListener("deviceorientation", handleOrientation);
+                    }
+                }
+
+                initParallaxEarly();
 
     </script>
 
