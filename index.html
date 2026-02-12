@@ -164,14 +164,28 @@
         #starfield-back,
         #starfield-front {
             position: fixed;
-            width: 200%;
-            height: 120%;
+            width: 1000%;
+            height: 1000%;
             top: -10%;
             left: 0;
             z-index: 0;
         }
 
         #starfield-front {
+            z-index: 1;
+        }
+
+        .streak {
+            position: fixed;
+            width: 12px;
+            height: 2px;
+            background: linear-gradient(
+                to right,
+                rgba(255,255,255,0.8),
+                rgba(255,255,255,0)
+            );
+            border-radius: 2px;
+            pointer-events: none;
             z-index: 1;
         }
 
@@ -273,27 +287,34 @@
             let parallaxY = 0;
 
             let driftBack = 0;
-                let driftFront = 0;
+            let driftFront = 0;
 
-                function driftSpace() {
+            let driftBackX = 0;
+            let driftBackY = 0;
 
-                    driftBack -= 0.04;   // дальний слой — медленнее
-                    driftFront -= 0.08;  // ближний слой — быстрее
+            let driftFrontX = 0;
+            let driftFrontY = 0;
 
-                    if (driftBack <= -100) driftBack = 0;
-                    if (driftFront <= -100) driftFront = 0;
+            function driftSpace() {
+
+                    driftBackX -= 0.12;
+                    driftBackY += 0.06;
+
+                    driftFrontX -= 0.25;
+                    driftFrontY += 0.12;
 
                     starfieldBack.style.transform =
-                        `translate(${driftBack + parallaxX}px, ${parallaxY}px)`;
+                        `translate(${driftBackX + parallaxX}px, ${driftBackY + parallaxY}px)`;
 
                     starfieldFront.style.transform =
-                        `translate(${driftFront + parallaxX * 1.5}px, ${parallaxY}px)`;
+                        `translate(${driftFrontX + parallaxX * 1.5}px, ${driftFrontY + parallaxY}px)`;
 
                     requestAnimationFrame(driftSpace);
                 }
 
+                driftSpace();
 
-            driftSpace();
+
 
             /* 📱 Параллакс */
             function requestGyroPermission() {
@@ -461,6 +482,42 @@
                 }
 
                 initParallaxEarly();
+
+
+                function createStreak() {
+
+                        const streak = document.createElement("div");
+                        streak.classList.add("streak");
+
+                        const startY = Math.random() * window.innerHeight;
+                        streak.style.top = startY + "px";
+                        streak.style.left = "-20px";
+
+                        document.body.appendChild(streak);
+
+                        const deltaX = window.innerWidth + 40;
+                        const deltaY = window.innerHeight * 0.25;
+
+                        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+                        streak.style.transform = `rotate(${angle}deg)`;
+
+                        streak.animate([
+                            { transform: `translate(0,0) rotate(${angle}deg)`, opacity: 0.8 },
+                            { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)`, opacity: 0 }
+                        ], {
+                            duration: 600,
+                            easing: "ease-out"
+                        });
+
+                        setTimeout(() => streak.remove(), 650);
+                    }
+
+                    setInterval(() => {
+                            if (Math.random() > 0.6) {
+                                createStreak();
+                            }
+                        }, 400);
 
     </script>
 
