@@ -115,22 +115,38 @@
         <div id="heart" class="heart">💗</div>
     </div>
 
-    <!-- Звук печатной машинки -->
-    <audio id="typeSound">
+    <!-- Два разных звука печати -->
+    <audio id="typeSound1">
         <source src="https://www.soundjay.com/mechanical/sounds/typewriter-key-1.mp3" type="audio/mpeg">
     </audio>
-
+    
+    <audio id="typeSound2">
+        <source src="https://www.soundjay.com/mechanical/sounds/typewriter-key-2.mp3" type="audio/mpeg">
+    </audio>
+    
     <!-- Финальный звук -->
     <audio id="finalSound">
         <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
     </audio>
+
+    <!-- сидит орет -->
+    <!-- <audio id="typeSound">
+        <source src="https://www.soundjay.com/mechanical/sounds/typewriter-key-1.mp3" type="audio/mpeg">
+        <source src="" type="audio/mpeg">
+    </audio> -->
+
+    <!-- стоит орет -->
+    <!-- <audio id="finalSound">
+        <source src="https://www.soundjay.com/buttons/sounds/button-16.mp3" type="audio/mpeg">
+    </audio> -->
 
     <script>
 
         const textElement = document.getElementById("text");
         const heart = document.getElementById("heart");
         const overlay = document.getElementById("overlay");
-        const typeSound = document.getElementById("typeSound");
+        const typeSound1 = document.getElementById("typeSound1");
+        const typeSound2 = document.getElementById("typeSound2");
         const finalSound = document.getElementById("finalSound");
 
         const messages = [
@@ -141,6 +157,7 @@
 
         let messageIndex = 0;
         let charIndex = 0;
+        let soundToggle = true;
 
         function startExperience() {
             document.querySelector(".start-screen").style.display = "none";
@@ -152,8 +169,16 @@
             if (charIndex < messages[messageIndex].length) {
                 textElement.innerHTML += messages[messageIndex].charAt(charIndex);
 
-                typeSound.currentTime = 0;
-                typeSound.play().catch(() => { });
+                // Чередование двух звуков
+                if (soundToggle) {
+                    typeSound1.currentTime = 0;
+                    typeSound1.play().catch(() => { });
+                } else {
+                    typeSound2.currentTime = 0;
+                    typeSound2.play().catch(() => { });
+                }
+
+                soundToggle = !soundToggle;
 
                 charIndex++;
                 setTimeout(typeWriter, 100);
@@ -192,10 +217,24 @@
                 textElement.classList.add("glow");
                 heart.style.opacity = "1";
                 finalSound.play().catch(() => { });
+
+                startHeartbeatVibration();
+
             }, 2000);
         }
 
+        // 💗 Вибрация в ритме сердца
+        function startHeartbeatVibration() {
+            if ("vibrate" in navigator) {
+                setInterval(() => {
+                    navigator.vibrate([120, 80, 180]);
+                    // 120мс удар, пауза 80мс, 180мс второй удар
+                }, 1000);
+            }
+        }
+
     </script>
+
 
 </body>
 
