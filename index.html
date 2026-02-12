@@ -62,33 +62,23 @@
         }
 
         .heart {
-            font-size: 34px;
-            margin-top: 20px;
+            display: block;
+            font-size: 70px;
+            margin-top: 30px;
             opacity: 0;
             animation: beat 1s infinite;
         }
 
+
         @keyframes beat {
-            0% {
-                transform: scale(1);
-            }
-
-            25% {
-                transform: scale(1.2);
-            }
-
-            40% {
-                transform: scale(1);
-            }
-
-            60% {
-                transform: scale(1.15);
-            }
-
-            100% {
-                transform: scale(1);
-            }
+            0%   { transform: scale(1); }
+            15%  { transform: scale(1.35); }
+            30%  { transform: scale(1); }
+            45%  { transform: scale(1.25); }
+            60%  { transform: scale(1); }
+            100% { transform: scale(1); }
         }
+
 
         .fade-overlay {
             position: fixed;
@@ -226,12 +216,19 @@
         // 💗 Вибрация в ритме сердца
         function startHeartbeatVibration() {
             if ("vibrate" in navigator) {
-                setInterval(() => {
-                    navigator.vibrate([120, 80, 180]);
-                    // 120мс удар, пауза 80мс, 180мс второй удар
-                }, 1000);
+
+                function beat() {
+                    navigator.vibrate(120);   // первый удар
+                    setTimeout(() => {
+                        navigator.vibrate(80);  // второй удар
+                    }, 300);
+                }
+
+                beat(); // сразу запускаем
+                setInterval(beat, 1000); // повторяем строго каждые 1000мс
             }
         }
+
 
     </script>
 
