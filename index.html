@@ -29,18 +29,9 @@
             left: -10%;
             z-index: 0;
             transition: transform 0.2s ease-out;
-            animation: slowDrift 60s linear infinite alternate;
         }
 
-        @keyframes slowDrift {
-            0% {
-                transform: translate(0px, 0px);
-            }
-
-            100% {
-                transform: translate(-40px, -30px);
-            }
-        }
+        
 
         .star {
             position: absolute;
@@ -169,12 +160,29 @@
             cursor: pointer;
             z-index: 3;
         }
+
+        #starfield-back,
+        #starfield-front {
+            position: fixed;
+            width: 200%;
+            height: 120%;
+            top: -10%;
+            left: 0;
+            z-index: 0;
+        }
+
+        #starfield-front {
+            z-index: 1;
+        }
+
     </style>
 </head>
 
 <body>
 
-    <div id="starfield"></div>
+    <div id="starfield-back"></div>
+    <div id="starfield-front"></div>
+
 
     <div class="start-screen" onclick="startExperience()">
         нажми, если готов 💫
@@ -200,136 +208,184 @@
     <script>
 
         const textElement = document.getElementById("text");
-        const heart = document.getElementById("heart");
-        const starfield = document.getElementById("starfield");
-        const spaceSound = document.getElementById("spaceSound");
-        const typeSound1 = document.getElementById("typeSound1");
-        const typeSound2 = document.getElementById("typeSound2");
+            const heart = document.getElementById("heart");
+            const starfield = document.getElementById("starfield");
+            const spaceSound = document.getElementById("spaceSound");
+            const typeSound1 = document.getElementById("typeSound1");
+            const typeSound2 = document.getElementById("typeSound2");
 
-        const messages = [
-            "Сааааш",
-            "а знаешь чтооо?",
-            "ты мне нравишься"
-        ];
+            const messages = [
+                "Сааааш",
+                "а знаешь чтооо?",
+                "ты мне нравишься"
+            ];
 
-        let messageIndex = 0;
-        let charIndex = 0;
-        let soundToggle = true;
+            let messageIndex = 0;
+            let charIndex = 0;
+            let soundToggle = true;
 
-        // 🌌 создаём звёзды
-        let stars = [];
+            /* ⭐ создаём звёзды */
+            const starfieldBack = document.getElementById("starfield-back");
+                const starfieldFront = document.getElementById("starfield-front");
 
-            function createStars() {
-                for (let i = 0; i < 160; i++) {
-                    const star = document.createElement("div");
-                    star.classList.add("star");
+                function createStars() {
 
-                    const size = Math.random() * 3 + 1;
+                    // дальний слой
+                    for (let i = 0; i < 140; i++) {
+                        const star = document.createElement("div");
+                        star.classList.add("star");
 
-                    const x = Math.random() * window.innerWidth;
-                    const y = Math.random() * window.innerHeight;
+                        const size = Math.random() * 2 + 0.5;
 
-                    star.style.width = size + "px";
-                    star.style.height = size + "px";
-                    star.style.left = x + "px";
-                    star.style.top = y + "px";
-                    star.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                        star.style.width = size + "px";
+                        star.style.height = size + "px";
+                        star.style.left = Math.random() * 200 + "vw";
+                        star.style.top = Math.random() * 100 + "vh";
+                        star.style.animationDuration = (Math.random() * 3 + 2) + "s";
 
-                    starfield.appendChild(star);
+                        starfieldBack.appendChild(star);
+                    }
 
-                    stars.push({
-                        el: star,
-                        x: x,
-                        y: y,
-                        baseX: x,
-                        baseY: y
-                    });
+                    // ближний слой
+                    for (let i = 0; i < 60; i++) {
+                        const star = document.createElement("div");
+                        star.classList.add("star");
+
+                        const size = Math.random() * 3 + 1.5;
+
+                        star.style.width = size + "px";
+                        star.style.height = size + "px";
+                        star.style.left = Math.random() * 200 + "vw";
+                        star.style.top = Math.random() * 100 + "vh";
+                        star.style.animationDuration = (Math.random() * 2 + 1) + "s";
+
+                        starfieldFront.appendChild(star);
+                    }
+                }
+
+
+            createStars();
+
+            /* 🌌 Плавный дрейф */
+            let driftX = 0;
+            let driftY = 0;
+            let parallaxX = 0;
+            let parallaxY = 0;
+
+            let driftBack = 0;
+                let driftFront = 0;
+
+                function driftSpace() {
+
+                    driftBack -= 0.04;   // дальний слой — медленнее
+                    driftFront -= 0.08;  // ближний слой — быстрее
+
+                    if (driftBack <= -100) driftBack = 0;
+                    if (driftFront <= -100) driftFront = 0;
+
+                    starfieldBack.style.transform =
+                        `translate(${driftBack + parallaxX}px, ${parallaxY}px)`;
+
+                    starfieldFront.style.transform =
+                        `translate(${driftFront + parallaxX * 1.5}px, ${parallaxY}px)`;
+
+                    requestAnimationFrame(driftSpace);
+                }
+
+
+            driftSpace();
+
+            /* 📱 Параллакс */
+            function requestGyroPermission() {
+
+                function handleOrientation(event) {
+                    parallaxX = event.gamma * 0.3;
+                    parallaxY = event.beta * 0.2;
+                }
+
+                if (typeof DeviceOrientationEvent !== "undefined" &&
+                    typeof DeviceOrientationEvent.requestPermission === "function") {
+
+                    DeviceOrientationEvent.requestPermission()
+                        .then(response => {
+                            if (response === "granted") {
+                                window.addEventListener("deviceorientation", handleOrientation);
+                            }
+                        })
+                        .catch(() => { });
+
+                } else {
+                    window.addEventListener("deviceorientation", handleOrientation);
                 }
             }
-    function explodeStars(touchX, touchY) {
 
-        stars.forEach(star => {
+            /* 🚀 Старт */
+            function startExperience() {
 
-            const dx = star.x - touchX;
-            const dy = star.y - touchY;
-            const distance = Math.sqrt(dx * dx + dy * dy);
+                document.querySelector(".start-screen").style.display = "none";
+                document.getElementById("main").style.display = "block";
 
-            if (distance < 120) {  // радиус реакции
-                const force = (120 - distance) / 6;
+                spaceSound.volume = 0.15;
+                spaceSound.play().catch(() => { });
 
-                star.x += dx / distance * force;
-                star.y += dy / distance * force;
+                requestGyroPermission();
 
-                star.el.style.transform =
-                    `translate(${star.x - star.baseX}px, ${star.y - star.baseY}px)`;
+                typeWriter();
             }
-        });
 
-        // мягкое возвращение
-        setTimeout(() => {
-            stars.forEach(star => {
-                star.x = star.baseX;
-                star.y = star.baseY;
-                star.el.style.transform = "translate(0,0)";
-            });
-        }, 400);
-    }
+            /* ⌨ печатная машинка */
+            function typeWriter() {
+                if (charIndex < messages[messageIndex].length) {
 
-    /* слушаем касания */
-    window.addEventListener("touchstart", e => {
-        const touch = e.touches[0];
-        explodeStars(touch.clientX, touch.clientY);
-    });
+                    textElement.innerHTML += messages[messageIndex].charAt(charIndex);
 
-    window.addEventListener("click", e => {
-        explodeStars(e.clientX, e.clientY);
-    });
-
-
-        createStars();
-
-        function startExperience() {
-            document.querySelector(".start-screen").style.display = "none";
-            document.getElementById("main").style.display = "block";
-
-            spaceSound.volume = 0.15;
-            spaceSound.play().catch(() => { });
-
-            requestGyroPermission();
-            typeWriter();
-        }
-
-        // 📱 ПАРАЛЛАКС
-        function requestGyroPermission() {
-            if (typeof DeviceOrientationEvent !== "undefined" &&
-                typeof DeviceOrientationEvent.requestPermission === "function") {
-
-                DeviceOrientationEvent.requestPermission().then(response => {
-                    if (response === "granted") {
-                        window.addEventListener("deviceorientation", handleOrientation);
+                    if (soundToggle) {
+                        typeSound1.currentTime = 0;
+                        typeSound1.play().catch(() => { });
+                    } else {
+                        typeSound2.currentTime = 0;
+                        typeSound2.play().catch(() => { });
                     }
-                }).catch(() => { });
-            } else {
-                window.addEventListener("deviceorientation", handleOrientation);
+
+                    soundToggle = !soundToggle;
+                    charIndex++;
+
+                    setTimeout(typeWriter, 90);
+
+                } else {
+                    setTimeout(nextMessage, 1500);
+                }
             }
-        }
 
-        function handleOrientation(event) {
-            const x = event.gamma;
-            const y = event.beta;
+            function nextMessage() {
+                if (messageIndex < messages.length - 1) {
 
-            starfield.style.transform =
-                `translate(${x * 0.5}px, ${y * 0.3}px)`;
-        }
+                    textElement.innerHTML = "";
+                    messageIndex++;
+                    charIndex = 0;
+                    typeWriter();
 
-        // 🌠 диагональный звездопад
-        function startStarfall() {
-            for (let i = 0; i < 6; i++) {
-                setTimeout(() => createShootingStar(), i * 300);
+                } else {
+
+                    document.body.style.background =
+                        "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
+
+                    textElement.classList.add("glow");
+                    heart.style.opacity = "1";
+
+                    startStarfall();
+                    startHeartbeatVibration();
+                }
             }
-        }
 
-        function createShootingStar() {
+            /* 🌠 звездопад */
+            function startStarfall() {
+                for (let i = 0; i < 6; i++) {
+                    setTimeout(() => createShootingStar(), i * 300);
+                }
+            }
+
+            function createShootingStar() {
 
                 const star = document.createElement("div");
                 star.classList.add("shooting-star");
@@ -345,8 +401,6 @@
 
                 const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
 
-                star.style.transform = `rotate(${angle}deg)`;
-
                 star.animate([
                     { transform: `translate(0,0) rotate(${angle}deg)` },
                     { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)` }
@@ -358,62 +412,20 @@
                 setTimeout(() => star.remove(), 1300);
             }
 
+            /* 💓 вибрация */
+            function startHeartbeatVibration() {
+                if ("vibrate" in navigator) {
 
-        function typeWriter() {
-            if (charIndex < messages[messageIndex].length) {
+                    function beat() {
+                        navigator.vibrate(120);
+                        setTimeout(() => navigator.vibrate(80), 300);
+                    }
 
-                textElement.innerHTML += messages[messageIndex].charAt(charIndex);
-
-                if (soundToggle) {
-                    typeSound1.currentTime = 0;
-                    typeSound1.play().catch(() => { });
-                } else {
-                    typeSound2.currentTime = 0;
-                    typeSound2.play().catch(() => { });
+                    beat();
+                    setInterval(beat, 1000);
                 }
-
-                soundToggle = !soundToggle;
-                charIndex++;
-                setTimeout(typeWriter, 90);
-
-            } else {
-                setTimeout(nextMessage, 1500);
             }
-        }
 
-        function nextMessage() {
-            if (messageIndex < messages.length - 1) {
-                textElement.innerHTML = "";
-                messageIndex++;
-                charIndex = 0;
-                typeWriter();
-            } else {
-                dramaticFinal();
-            }
-        }
-
-        function dramaticFinal() {
-
-            document.body.style.background =
-                "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
-
-            textElement.classList.add("glow");
-            heart.style.opacity = "1";
-
-            startStarfall();
-            startHeartbeatVibration();
-        }
-
-        function startHeartbeatVibration() {
-            if ("vibrate" in navigator) {
-                function beat() {
-                    navigator.vibrate(120);
-                    setTimeout(() => navigator.vibrate(80), 300);
-                }
-                beat();
-                setInterval(beat, 1000);
-            }
-        }
 
     </script>
 
