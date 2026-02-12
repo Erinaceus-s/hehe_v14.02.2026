@@ -208,7 +208,7 @@
     </div>
 
     <audio id="spaceSound" loop>
-        <source src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_4a8d8c7b91.mp3">
+        <source src="magic.mp3">
     </audio>
 
     <audio id="typeSound1">
@@ -231,12 +231,13 @@
             const messages = [
                 "Сааааш",
                 "а знаешь чтооо?",
-                "ты мне нравишься"
+                "а ти мине нраааавишься"
             ];
 
             let messageIndex = 0;
             let charIndex = 0;
             let soundToggle = true;
+            let videoInserted = false;
 
             /* ⭐ создаём звёзды */
             const starfieldBack = document.getElementById("starfield-back");
@@ -346,9 +347,7 @@
                 document.querySelector(".start-screen").style.display = "none";
                 document.getElementById("main").style.display = "block";
 
-                spaceSound.volume = 0.15;
-                spaceSound.play().catch(() => { });
-
+                
                 typeWriter();
                 if (typeof DeviceOrientationEvent !== "undefined" &&
                     typeof DeviceOrientationEvent.requestPermission === "function") {
@@ -372,6 +371,26 @@
                 if (charIndex < messages[messageIndex].length) {
 
                     textElement.innerHTML += messages[messageIndex].charAt(charIndex);
+                    if (
+                        messageIndex === 0 &&
+                        charIndex === messages[0].length - 1 &&
+                        !videoInserted
+                    ) {
+                        const video = document.createElement("video");
+                        video.src = "kitty.mp4";
+                        video.autoplay = true;
+                        video.muted = true;
+                        video.loop = true;
+                        video.playsInline = true;
+
+                        video.style.height = "1em";
+                        video.style.verticalAlign = "middle";
+                        video.style.marginLeft = "8px";
+
+                        textElement.appendChild(video);
+                        videoInserted = true;
+                    }
+
 
                     if (soundToggle) {
                         typeSound1.currentTime = 0;
@@ -392,11 +411,14 @@
             }
 
             function nextMessage() {
+                
+
                 if (messageIndex < messages.length - 1) {
 
                     textElement.innerHTML = "";
                     messageIndex++;
                     charIndex = 0;
+                    
                     typeWriter();
 
                 } else {
@@ -409,6 +431,20 @@
 
                     startStarfall();
                     startHeartbeatVibration();
+                    document.body.style.background =
+                        "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
+
+                    textElement.classList.add("glow");
+                    heart.style.opacity = "1";
+
+                    // 🎵 запускаем magic именно здесь
+                    spaceSound.currentTime = 0;
+                    spaceSound.volume = 0.4;   // можешь настроить громкость
+                    spaceSound.play().catch(() => { });
+
+                    startStarfall();
+                    startHeartbeatVibration();
+
                 }
             }
 
