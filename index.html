@@ -335,7 +335,6 @@
             justify-content: center;
             gap: 25px;
             z-index: 20;
-            transform: translateY(-15%);
         }
 
         #center-form {
@@ -376,8 +375,8 @@
             z-index: 50;
         }
 
-        #center-step4 {
-            width: 380px;
+        #center-step5 {
+            width: 150px;
             transform: scale(0.6);
             opacity: 0;
         }
@@ -569,7 +568,7 @@
 
 
     <div class="start-screen" onclick="startExperience()">
-        тык 💫
+        сделайти буп 💫
     </div>
 
     <div class="container" id="main" style="display:none;">
@@ -598,7 +597,7 @@
     </div>
 
     <div id="center-stage" style="display:none;">
-        <img id="center-step4" src="step4.png">
+        <img id="center-step5" src="step5.png">
 
         <div id="center-form">
             <input id="love-input" type="text" placeholder="Код 💗">
@@ -623,9 +622,9 @@
 
 
         const messages = [
-            "текст 1",
-            "текст2222222",
-            "текст 3333333333333"
+            "Сааааш",
+            "а знаешь чтооо?",
+            "а ти мине нраааавишься"
         ];
 
         let messageIndex = 0;
@@ -1016,7 +1015,7 @@
 
                 // показываем центр
                 const centerStage = document.getElementById("center-stage");
-                const stepImg = document.getElementById("center-step4");
+                const stepImg = document.getElementById("center-step5");
 
                 centerStage.style.display = "flex";
 
@@ -1378,6 +1377,5 @@
     </script>
 
 </body>
-
 
 </html>
