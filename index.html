@@ -688,21 +688,20 @@
                 textElement.classList.add("glow");
                 heart.style.opacity = "1";
 
-                startStarfall();
-                startHeartbeatVibration();
                 document.body.style.background =
                     "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
 
                 textElement.classList.add("glow");
                 heart.style.opacity = "1";
 
-                // 🎵 запускаем magic именно здесь
+                // 🎵 запускаем magic
                 spaceSound.currentTime = 0;
-                spaceSound.volume = 0.4;   // можешь настроить громкость
+                spaceSound.volume = 0.4;
                 spaceSound.play().catch(() => { });
 
                 startStarfall();
                 startHeartbeatVibration();
+
                 setTimeout(startFinalSequence, 10000);
 
 
@@ -744,8 +743,12 @@
         }
 
         /* 💓 вибрация */
+        
         function startHeartbeatVibration() {
-            if ("vibrate" in navigator) {
+                if (!("vibrate" in navigator)) return;
+
+                // если уже работает — не запускаем снова
+                if (heartbeatInterval) return;
 
                 function beat() {
                     navigator.vibrate(120);
@@ -753,11 +756,9 @@
                 }
 
                 beat();
-
-                // сохраняем интервал
                 heartbeatInterval = setInterval(beat, 1000);
             }
-        }
+
 
 
         // 🔄 пытаемся включить параллакс сразу
