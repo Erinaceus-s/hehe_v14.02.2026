@@ -11,14 +11,12 @@
             margin: 0;
             height: 100vh;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             font-family: 'Georgia', serif;
             background: radial-gradient(ellipse at bottom, #0a0c18 0%, #000000 100%);
             color: white;
             transition: background 2s ease;
         }
+
 
         /* 🌌 слой звёзд */
         #starfield {
@@ -31,7 +29,7 @@
             transition: transform 0.2s ease-out;
         }
 
-        
+
 
         .star {
             position: absolute;
@@ -59,41 +57,50 @@
 
         /* 🌠 падающая звезда */
         .shooting-star {
-    position: fixed;
-    width: 6px;
-    height: 6px;
-    background: white;
-    border-radius: 50%;
-    box-shadow: 0 0 12px white, 0 0 25px white;
-    z-index: 1;
-}
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 12px white, 0 0 25px white;
+            z-index: 1;
+        }
 
-.shooting-star::after {
-    content: "";
-    position: absolute;
-    width: 120px;
-    height: 2px;
-    top: 50%;
-    left: -120px;
-    transform: translateY(-50%);
-    background: linear-gradient(
-        to right,
-        rgba(255,255,255,0.8),
-        rgba(255,255,255,0)
-    );
-}
-
+        .shooting-star::after {
+            content: "";
+            position: absolute;
+            width: 120px;
+            height: 2px;
+            top: 50%;
+            left: -120px;
+            transform: translateY(-50%);
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 0.8),
+                    rgba(255, 255, 255, 0));
+        }
 
         .container {
-            position: relative;
+            position: fixed;
+            top: 5%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: grid;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
             z-index: 2;
-            text-align: center;
         }
 
+
         .text {
-            font-size: 9vw;
+            font-size: clamp(28px, 6vw, 64px);
             min-height: 15vh;
+            width: 100%;
+            text-align: center;
+            transition: opacity 0.25s ease;
         }
+
 
         .glow {
             color: #ffd1f0;
@@ -154,12 +161,17 @@
         }
 
         .start-screen {
-            position: absolute;
+            position: fixed;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
             font-size: 5vw;
             opacity: 0.8;
             cursor: pointer;
             z-index: 3;
         }
+
 
         #starfield-back,
         #starfield-front {
@@ -179,16 +191,233 @@
             position: fixed;
             width: 12px;
             height: 2px;
-            background: linear-gradient(
-                to right,
-                rgba(255,255,255,0.8),
-                rgba(255,255,255,0)
-            );
+            background: linear-gradient(to right,
+                    rgba(255, 255, 255, 0.8),
+                    rgba(255, 255, 255, 0));
             border-radius: 2px;
             pointer-events: none;
             z-index: 1;
         }
 
+        #final-sequence {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 5;
+        }
+
+        #sequence-img {
+            width: 180px;
+            cursor: pointer;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+
+        #sequence-img:hover {
+            transform: scale(1.05);
+        }
+
+        #final-form {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #final-form input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            outline: none;
+        }
+
+        #final-form button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            background: #ff4da6;
+            color: white;
+        }
+
+
+
+
+        #constellation-box {
+            margin-top: 40px;
+            width: 320px;
+            height: 280px;
+            position: relative;
+        }
+
+        #constellation-text {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: white;
+        }
+
+        .constellation-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+            box-shadow: 0 0 6px white;
+        }
+
+        .constellation-star.big {
+            box-shadow: 0 0 12px white, 0 0 20px #ff6bb5;
+        }
+
+        .constellation-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.6);
+            transform-origin: left center;
+
+            transform: scaleX(0);
+            animation: drawLine 1.2s ease forwards;
+        }
+
+        @keyframes drawLine {
+            from {
+                transform: scaleX(0);
+                opacity: 0;
+            }
+
+            to {
+                transform: scaleX(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes starFloat {
+            0% {
+                transform: translate(0, 0);
+            }
+
+            50% {
+                transform: translate(0.8px, -0.8px);
+            }
+
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        .constellation-star {
+            position: absolute;
+            background: white;
+            border-radius: 50%;
+            animation:
+                twinkle linear infinite,
+                starFloat 3s ease-in-out infinite;
+        }
+
+        .constellation-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.4);
+            transform-origin: left center;
+            opacity: 0;
+            animation: lineFade 1.2s ease forwards;
+        }
+
+        @keyframes lineFade {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        #center-stage {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 25px;
+            z-index: 20;
+        }
+
+        #center-form {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        #center-form input {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+        }
+
+        #center-form button {
+            padding: 10px;
+            border-radius: 10px;
+            border: none;
+            background: #ff4da6;
+            color: white;
+            cursor: pointer;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        .explosion-star {
+            position: fixed;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px white, 0 0 15px #ff6bb5;
+            pointer-events: none;
+            z-index: 50;
+        }
+
+        #center-step4 {
+            width: 280px;
+            transform: scale(0.6);
+            opacity: 0;
+        }
+
+        .step-animate {
+            animation: stepAppear 0.8s ease forwards;
+        }
+
+
+        @keyframes stepAppear {
+            0% {
+                transform: scale(0.6);
+                opacity: 0;
+            }
+
+            60% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+                /* ← ВАЖНО */
+            }
+        }
+
+
+        .fade-out {
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
     </style>
 </head>
 
@@ -219,341 +448,585 @@
         <source src="typewriter-2.mp3">
     </audio>
 
+
+
+    <div id="final-sequence" style="display:none;">
+        <img id="sequence-img" src="step1.png">
+    </div>
+
+    <div id="center-stage" style="display:none;">
+        <img id="center-step4" src="step4.png">
+
+        <div id="center-form">
+            <input id="love-input" type="text" placeholder="Код 💗">
+            <button id="love-button">Тык</button>
+        </div>
+
+        <div id="constellation-box">
+            <div id="constellation-text"></div>
+        </div>
+    </div>
+
     <script>
 
         const textElement = document.getElementById("text");
-            const heart = document.getElementById("heart");
-            const starfield = document.getElementById("starfield");
-            const spaceSound = document.getElementById("spaceSound");
-            const typeSound1 = document.getElementById("typeSound1");
-            const typeSound2 = document.getElementById("typeSound2");
+        const heart = document.getElementById("heart");
+        const starfield = document.getElementById("starfield");
+        const spaceSound = document.getElementById("spaceSound");
+        const typeSound1 = document.getElementById("typeSound1");
+        const typeSound2 = document.getElementById("typeSound2");
+        const clickSound = typeSound2;
 
-            const messages = [
-                "сообщение 1",
-                "сообщение 2",
-                "сообщение 3"
-            ];
 
-            let messageIndex = 0;
-            let charIndex = 0;
-            let soundToggle = true;
-            let videoInserted = false;
+        const messages = [
+            "Сааааш",
+            "а знаешь чтооо?",
+            "а ти мине нраааавишься"
+        ];
 
-            /* ⭐ создаём звёзды */
-            const starfieldBack = document.getElementById("starfield-back");
-                const starfieldFront = document.getElementById("starfield-front");
+        let messageIndex = 0;
+        let charIndex = 0;
+        let soundToggle = true;
+        let videoInserted = false;
 
-                function createStars() {
+        /* ⭐ создаём звёзды */
+        const starfieldBack = document.getElementById("starfield-back");
+        const starfieldFront = document.getElementById("starfield-front");
 
-                    // дальний слой
-                    for (let i = 0; i < 140; i++) {
-                        const star = document.createElement("div");
-                        star.classList.add("star");
+        function createStars() {
 
-                        const size = Math.random() * 2 + 0.5;
+            // дальний слой
+            for (let i = 0; i < 140; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
 
-                        star.style.width = size + "px";
-                        star.style.height = size + "px";
-                        star.style.left = Math.random() * 200 + "vw";
-                        star.style.top = Math.random() * 100 + "vh";
-                        star.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                const size = Math.random() * 2 + 0.5;
 
-                        starfieldBack.appendChild(star);
-                    }
+                star.style.width = size + "px";
+                star.style.height = size + "px";
+                star.style.left = Math.random() * 200 + "vw";
+                star.style.top = Math.random() * 100 + "vh";
+                star.style.animationDuration = (Math.random() * 3 + 2) + "s";
 
-                    // ближний слой
-                    for (let i = 0; i < 60; i++) {
-                        const star = document.createElement("div");
-                        star.classList.add("star");
+                starfieldBack.appendChild(star);
+            }
 
-                        const size = Math.random() * 3 + 1.5;
+            // ближний слой
+            for (let i = 0; i < 60; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
 
-                        star.style.width = size + "px";
-                        star.style.height = size + "px";
-                        star.style.left = Math.random() * 200 + "vw";
-                        star.style.top = Math.random() * 100 + "vh";
-                        star.style.animationDuration = (Math.random() * 2 + 1) + "s";
+                const size = Math.random() * 3 + 1.5;
 
-                        starfieldFront.appendChild(star);
-                    }
+                star.style.width = size + "px";
+                star.style.height = size + "px";
+                star.style.left = Math.random() * 200 + "vw";
+                star.style.top = Math.random() * 100 + "vh";
+                star.style.animationDuration = (Math.random() * 2 + 1) + "s";
+
+                starfieldFront.appendChild(star);
+            }
+        }
+
+
+        createStars();
+
+        /* 🌌 Плавный дрейф */
+        let driftX = 0;
+        let driftY = 0;
+        let parallaxX = 0;
+        let parallaxY = 0;
+
+        let driftBack = 0;
+        let driftFront = 0;
+
+        let driftBackX = 0;
+        let driftBackY = 0;
+
+        let driftFrontX = 0;
+        let driftFrontY = 0;
+
+        function driftSpace() {
+
+            driftBackX -= 0.12;
+            driftBackY += 0.06;
+
+            driftFrontX -= 0.25;
+            driftFrontY += 0.12;
+
+            starfieldBack.style.transform =
+                `translate(${driftBackX + parallaxX}px, ${driftBackY + parallaxY}px)`;
+
+            starfieldFront.style.transform =
+                `translate(${driftFrontX + parallaxX * 1.5}px, ${driftFrontY + parallaxY}px)`;
+
+            requestAnimationFrame(driftSpace);
+        }
+
+        driftSpace();
+
+
+
+        /* 📱 Параллакс */
+        function requestGyroPermission() {
+
+            function handleOrientation(event) {
+                parallaxX = event.gamma * 0.3;
+                parallaxY = event.beta * 0.2;
+            }
+
+            if (typeof DeviceOrientationEvent !== "undefined" &&
+                typeof DeviceOrientationEvent.requestPermission === "function") {
+
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === "granted") {
+                            window.addEventListener("deviceorientation", handleOrientation);
+                        }
+                    })
+                    .catch(() => { });
+
+            } else {
+                window.addEventListener("deviceorientation", handleOrientation);
+            }
+        }
+
+        /* 🚀 Старт */
+        function startExperience() {
+
+            document.querySelector(".start-screen").style.display = "none";
+            document.getElementById("main").style.display = "flex";
+
+
+            typeWriter();
+            if (typeof DeviceOrientationEvent !== "undefined" &&
+                typeof DeviceOrientationEvent.requestPermission === "function") {
+
+                DeviceOrientationEvent.requestPermission()
+                    .then(response => {
+                        if (response === "granted") {
+                            window.addEventListener("deviceorientation", event => {
+                                parallaxX = event.gamma * 0.3;
+                                parallaxY = event.beta * 0.2;
+                            });
+                        }
+                    })
+                    .catch(() => { });
+            }
+
+        }
+
+        /* ⌨ печатная машинка */
+        function typeWriter() {
+            if (charIndex < messages[messageIndex].length) {
+
+                textElement.innerHTML += messages[messageIndex].charAt(charIndex);
+                if (
+                    messageIndex === 0 &&
+                    charIndex === messages[0].length - 1 &&
+                    !videoInserted
+                ) {
+                    const video = document.createElement("video");
+                    video.src = "kitty.mp4";
+                    video.autoplay = true;
+                    video.muted = true;
+                    video.loop = true;
+                    video.playsInline = true;
+
+                    video.style.height = "1em";
+                    video.style.verticalAlign = "middle";
+                    video.style.marginLeft = "8px";
+
+                    textElement.appendChild(video);
+                    videoInserted = true;
                 }
 
 
-            createStars();
-
-            /* 🌌 Плавный дрейф */
-            let driftX = 0;
-            let driftY = 0;
-            let parallaxX = 0;
-            let parallaxY = 0;
-
-            let driftBack = 0;
-            let driftFront = 0;
-
-            let driftBackX = 0;
-            let driftBackY = 0;
-
-            let driftFrontX = 0;
-            let driftFrontY = 0;
-
-            function driftSpace() {
-
-                    driftBackX -= 0.12;
-                    driftBackY += 0.06;
-
-                    driftFrontX -= 0.25;
-                    driftFrontY += 0.12;
-
-                    starfieldBack.style.transform =
-                        `translate(${driftBackX + parallaxX}px, ${driftBackY + parallaxY}px)`;
-
-                    starfieldFront.style.transform =
-                        `translate(${driftFrontX + parallaxX * 1.5}px, ${driftFrontY + parallaxY}px)`;
-
-                    requestAnimationFrame(driftSpace);
-                }
-
-                driftSpace();
-
-
-
-            /* 📱 Параллакс */
-            function requestGyroPermission() {
-
-                function handleOrientation(event) {
-                    parallaxX = event.gamma * 0.3;
-                    parallaxY = event.beta * 0.2;
-                }
-
-                if (typeof DeviceOrientationEvent !== "undefined" &&
-                    typeof DeviceOrientationEvent.requestPermission === "function") {
-
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === "granted") {
-                                window.addEventListener("deviceorientation", handleOrientation);
-                            }
-                        })
-                        .catch(() => { });
-
+                if (soundToggle) {
+                    typeSound1.currentTime = 0;
+                    typeSound1.play().catch(() => { });
                 } else {
-                    window.addEventListener("deviceorientation", handleOrientation);
-                }
-            }
-
-            /* 🚀 Старт */
-            function startExperience() {
-
-                document.querySelector(".start-screen").style.display = "none";
-                document.getElementById("main").style.display = "block";
-
-                
-                typeWriter();
-                if (typeof DeviceOrientationEvent !== "undefined" &&
-                    typeof DeviceOrientationEvent.requestPermission === "function") {
-
-                    DeviceOrientationEvent.requestPermission()
-                        .then(response => {
-                            if (response === "granted") {
-                                window.addEventListener("deviceorientation", event => {
-                                    parallaxX = event.gamma * 0.3;
-                                    parallaxY = event.beta * 0.2;
-                                });
-                            }
-                        })
-                        .catch(() => { });
+                    typeSound2.currentTime = 0;
+                    typeSound2.play().catch(() => { });
                 }
 
+                soundToggle = !soundToggle;
+                charIndex++;
+
+                setTimeout(typeWriter, 90);
+
+            } else {
+                setTimeout(nextMessage, 1500);
             }
+        }
 
-            /* ⌨ печатная машинка */
-            function typeWriter() {
-                if (charIndex < messages[messageIndex].length) {
-
-                    textElement.innerHTML += messages[messageIndex].charAt(charIndex);
-                    if (
-                        messageIndex === 0 &&
-                        charIndex === messages[0].length - 1 &&
-                        !videoInserted
-                    ) {
-                        const video = document.createElement("video");
-                        video.src = "kitty.mp4";
-                        video.autoplay = true;
-                        video.muted = true;
-                        video.loop = true;
-                        video.playsInline = true;
-
-                        video.style.height = "1em";
-                        video.style.verticalAlign = "middle";
-                        video.style.marginLeft = "8px";
-
-                        textElement.appendChild(video);
-                        videoInserted = true;
-                    }
+        function nextMessage() {
 
 
-                    if (soundToggle) {
-                        typeSound1.currentTime = 0;
-                        typeSound1.play().catch(() => { });
-                    } else {
-                        typeSound2.currentTime = 0;
-                        typeSound2.play().catch(() => { });
-                    }
+            if (messageIndex < messages.length - 1) {
 
-                    soundToggle = !soundToggle;
-                    charIndex++;
+                // плавно исчезаем
+                textElement.classList.add("fade-out");
 
-                    setTimeout(typeWriter, 90);
-
-                } else {
-                    setTimeout(nextMessage, 1500);
-                }
-            }
-
-            function nextMessage() {
-                
-
-                if (messageIndex < messages.length - 1) {
+                setTimeout(() => {
 
                     textElement.innerHTML = "";
+                    textElement.classList.remove("fade-out");
+
                     messageIndex++;
                     charIndex = 0;
-                    
+
                     typeWriter();
 
-                } else {
+                }, 250); // время должно совпадать с transition
+            } else {
 
-                    document.body.style.background =
-                        "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
+                document.body.style.background =
+                    "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
 
-                    textElement.classList.add("glow");
-                    heart.style.opacity = "1";
+                textElement.classList.add("glow");
+                heart.style.opacity = "1";
 
-                    startStarfall();
-                    startHeartbeatVibration();
-                    document.body.style.background =
-                        "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
+                startStarfall();
+                startHeartbeatVibration();
+                document.body.style.background =
+                    "radial-gradient(ellipse at bottom, #2b0f2f 0%, #000000 100%)";
 
-                    textElement.classList.add("glow");
-                    heart.style.opacity = "1";
+                textElement.classList.add("glow");
+                heart.style.opacity = "1";
 
-                    // 🎵 запускаем magic именно здесь
-                    spaceSound.currentTime = 0;
-                    spaceSound.volume = 0.4;   // можешь настроить громкость
-                    spaceSound.play().catch(() => { });
+                // 🎵 запускаем magic именно здесь
+                spaceSound.currentTime = 0;
+                spaceSound.volume = 0.4;   // можешь настроить громкость
+                spaceSound.play().catch(() => { });
 
-                    startStarfall();
-                    startHeartbeatVibration();
+                startStarfall();
+                startHeartbeatVibration();
+                setTimeout(startFinalSequence, 10000);
 
+
+            }
+        }
+
+        /* 🌠 звездопад */
+        function startStarfall() {
+            for (let i = 0; i < 6; i++) {
+                setTimeout(() => createShootingStar(), i * 300);
+            }
+        }
+
+        function createShootingStar() {
+
+            const star = document.createElement("div");
+            star.classList.add("shooting-star");
+
+            const startY = Math.random() * 40;
+            star.style.top = startY + "vh";
+            star.style.left = "-10vw";
+
+            document.body.appendChild(star);
+
+            const deltaX = window.innerWidth * 1.2;
+            const deltaY = window.innerHeight * 0.4;
+
+            const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+            star.animate([
+                { transform: `translate(0,0) rotate(${angle}deg)` },
+                { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)` }
+            ], {
+                duration: 1200,
+                easing: "ease-out"
+            });
+
+            setTimeout(() => star.remove(), 1300);
+        }
+
+        /* 💓 вибрация */
+        function startHeartbeatVibration() {
+            if ("vibrate" in navigator) {
+
+                function beat() {
+                    navigator.vibrate(120);
+                    setTimeout(() => navigator.vibrate(80), 300);
                 }
+
+                beat();
+                setInterval(beat, 1000);
+            }
+        }
+
+        // 🔄 пытаемся включить параллакс сразу
+
+        function initParallaxEarly() {
+
+            function handleOrientation(event) {
+                parallaxX = event.gamma * 0.3;
+                parallaxY = event.beta * 0.2;
             }
 
-            /* 🌠 звездопад */
-            function startStarfall() {
-                for (let i = 0; i < 6; i++) {
-                    setTimeout(() => createShootingStar(), i * 300);
-                }
-            }
+            if (typeof DeviceOrientationEvent !== "undefined" &&
+                typeof DeviceOrientationEvent.requestPermission === "function") {
 
-            function createShootingStar() {
+                // iPhone — ждём клика
+                console.log("iOS detected — параллакс включится после нажатия");
+
+            } else {
+                // Android — сразу работает
+                window.addEventListener("deviceorientation", handleOrientation);
+            }
+        }
+
+        initParallaxEarly();
+
+
+        function createStreak() {
+
+            const streak = document.createElement("div");
+            streak.classList.add("streak");
+
+            const startY = Math.random() * window.innerHeight;
+            streak.style.top = startY + "px";
+            streak.style.left = "-20px";
+
+            document.body.appendChild(streak);
+
+            const deltaX = window.innerWidth + 40;
+            const deltaY = window.innerHeight * 0.25;
+
+            const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+
+            streak.style.transform = `rotate(${angle}deg)`;
+
+            streak.animate([
+                { transform: `translate(0,0) rotate(${angle}deg)`, opacity: 0.8 },
+                { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)`, opacity: 0 }
+            ], {
+                duration: 600,
+                easing: "ease-out"
+            });
+
+            setTimeout(() => streak.remove(), 650);
+        }
+
+        setInterval(() => {
+            if (Math.random() > 0.6) {
+                createStreak();
+            }
+        }, 400);
+
+        function startFinalSequence() {
+
+            const container = document.getElementById("final-sequence");
+            const sequenceImg = document.getElementById("sequence-img");
+            const finalForm = document.getElementById("final-form");
+
+            container.style.display = "block";
+
+            const images = [
+                "step1.png",
+                "step2.png",
+                "step3.png",
+                "step4.png"
+            ];
+
+            let currentStep = 0;
+
+            sequenceImg.addEventListener("click", () => {
+
+                // 🔊 звук при каждом клике по step
+                clickSound.currentTime = 0;
+                clickSound.play().catch(() => { });
+
+                currentStep++;
+
+                if (currentStep < images.length) {
+                    sequenceImg.src = images[currentStep];
+                }
+
+                if (currentStep === images.length - 1) {
+
+                    sequenceImg.style.display = "none";
+
+                    // скрываем старый финал
+                    textElement.style.display = "none";
+                    heart.style.display = "none";
+                    spaceSound.pause();
+                    navigator.vibrate(0);
+
+                    // показываем центр-сцену
+                    const centerStage = document.getElementById("center-stage");
+                    const stepImg = document.getElementById("center-step4");
+
+                    centerStage.style.display = "flex";
+
+                    // перезапуск анимации
+                    stepImg.classList.remove("step-animate");
+                    void stepImg.offsetWidth; // force reflow
+                    stepImg.classList.add("step-animate");
+
+                    createHeartConstellation();
+
+                }
+
+
+
+            });
+
+        }
+
+
+        function createHeartConstellation() {
+
+            const box = document.getElementById("constellation-box");
+            box.querySelectorAll(".constellation-star, .constellation-line")
+                .forEach(el => el.remove());
+
+
+            const points = 60;
+            const scale = 11;
+
+            const starPositions = [];
+
+            for (let i = 0; i < points; i++) {
+
+                const t = (Math.PI * 2 * i) / points;
+
+                const x = 16 * Math.pow(Math.sin(t), 3);
+                const y =
+                    13 * Math.cos(t)
+                    - 5 * Math.cos(2 * t)
+                    - 2 * Math.cos(3 * t)
+                    - Math.cos(4 * t);
+
+                const jitter = Math.random() * 6 - 3;
+
+                const posX = 150 + x * scale + jitter;
+                const posY = 120 - y * scale + jitter;
 
                 const star = document.createElement("div");
-                star.classList.add("shooting-star");
+                star.classList.add("constellation-star");
 
-                const startY = Math.random() * 40;
-                star.style.top = startY + "vh";
-                star.style.left = "-10vw";
+                const size = Math.random() * 3 + 2;
 
-                document.body.appendChild(star);
+                star.style.width = size + "px";
+                star.style.height = size + "px";
+                star.style.left = posX + "px";
+                star.style.top = posY + "px";
+                star.style.animationDuration = (Math.random() * 3 + 2) + "s";
 
-                const deltaX = window.innerWidth * 1.2;
-                const deltaY = window.innerHeight * 0.4;
+                // каждая 6-я звезда крупнее
+                if (i % 6 === 0) {
+                    star.classList.add("big");
+                    star.style.width = "5px";
+                    star.style.height = "5px";
+                }
 
-                const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
+                box.appendChild(star);
 
-                star.animate([
-                    { transform: `translate(0,0) rotate(${angle}deg)` },
-                    { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)` }
+                starPositions.push({ x: posX, y: posY });
+            }
+
+            // 🔥 рисуем линии
+            for (let i = 0; i < starPositions.length; i++) {
+
+                const next = (i + 1) % starPositions.length;
+
+                const x1 = starPositions[i].x;
+                const y1 = starPositions[i].y;
+
+                const x2 = starPositions[next].x;
+                const y2 = starPositions[next].y;
+
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+
+                const length = Math.sqrt(dx * dx + dy * dy);
+                const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                const line = document.createElement("div");
+                line.classList.add("constellation-line");
+
+                line.style.width = length + "px";
+                line.style.left = x1 + "px";
+                line.style.top = y1 + "px";
+                line.style.transform = `rotate(${angle}deg)`;
+
+                box.appendChild(line);
+            }
+        }
+
+
+        function triggerStarFlash() {
+
+            const stars = document.querySelectorAll(".constellation-star");
+
+            stars.forEach(star => {
+                star.style.boxShadow = "0 0 20px white, 0 0 35px #ff6bb5";
+                star.style.transform = "scale(1.4)";
+
+                setTimeout(() => {
+                    star.style.boxShadow = "0 0 6px white";
+                    star.style.transform = "scale(1)";
+                }, 500);
+            });
+        }
+
+
+
+        const button = document.getElementById("love-button");
+
+        button.addEventListener("click", () => {
+
+            const input = document.getElementById("love-input")
+                .value.trim().toLowerCase();
+
+            const text = document.getElementById("constellation-text");
+
+            clickSound.currentTime = 0;
+            clickSound.play().catch(() => { });
+
+            if (input === "тест") {
+                text.textContent = "ответ ответ";
+                triggerStarFlash();
+                starExplosion();
+                text.style.textShadow =
+                    "0 0 20px #ff6bb5, 0 0 40px #ff1493";
+            } else {
+                text.textContent = "";
+            }
+        });
+
+
+        function starExplosion() {
+
+            for (let i = 0; i < 25; i++) {
+
+                const particle = document.createElement("div");
+                particle.classList.add("explosion-star");
+
+                particle.style.left = "50%";
+                particle.style.top = "50%";
+
+                document.body.appendChild(particle);
+
+                const angle = Math.random() * Math.PI * 2;
+                const distance = Math.random() * 120 + 50;
+
+                const x = Math.cos(angle) * distance;
+                const y = Math.sin(angle) * distance;
+
+                particle.animate([
+                    { transform: "translate(-50%, -50%) scale(1)", opacity: 1 },
+                    { transform: `translate(${x}px, ${y}px) scale(0.2)`, opacity: 0 }
                 ], {
-                    duration: 1200,
+                    duration: 900,
                     easing: "ease-out"
                 });
 
-                setTimeout(() => star.remove(), 1300);
+                setTimeout(() => particle.remove(), 900);
             }
-
-            /* 💓 вибрация */
-            function startHeartbeatVibration() {
-                if ("vibrate" in navigator) {
-
-                    function beat() {
-                        navigator.vibrate(120);
-                        setTimeout(() => navigator.vibrate(80), 300);
-                    }
-
-                    beat();
-                    setInterval(beat, 1000);
-                }
-            }
-
-            // 🔄 пытаемся включить параллакс сразу
-
-                function initParallaxEarly() {
-
-                    function handleOrientation(event) {
-                        parallaxX = event.gamma * 0.3;
-                        parallaxY = event.beta * 0.2;
-                    }
-
-                    if (typeof DeviceOrientationEvent !== "undefined" &&
-                        typeof DeviceOrientationEvent.requestPermission === "function") {
-
-                        // iPhone — ждём клика
-                        console.log("iOS detected — параллакс включится после нажатия");
-
-                    } else {
-                        // Android — сразу работает
-                        window.addEventListener("deviceorientation", handleOrientation);
-                    }
-                }
-
-                initParallaxEarly();
-
-
-                function createStreak() {
-
-                        const streak = document.createElement("div");
-                        streak.classList.add("streak");
-
-                        const startY = Math.random() * window.innerHeight;
-                        streak.style.top = startY + "px";
-                        streak.style.left = "-20px";
-
-                        document.body.appendChild(streak);
-
-                        const deltaX = window.innerWidth + 40;
-                        const deltaY = window.innerHeight * 0.25;
-
-                        const angle = Math.atan2(deltaY, deltaX) * (180 / Math.PI);
-
-                        streak.style.transform = `rotate(${angle}deg)`;
-
-                        streak.animate([
-                            { transform: `translate(0,0) rotate(${angle}deg)`, opacity: 0.8 },
-                            { transform: `translate(${deltaX}px, ${deltaY}px) rotate(${angle}deg)`, opacity: 0 }
-                        ], {
-                            duration: 600,
-                            easing: "ease-out"
-                        });
-
-                        setTimeout(() => streak.remove(), 650);
-                    }
-
-                    setInterval(() => {
-                            if (Math.random() > 0.6) {
-                                createStreak();
-                            }
-                        }, 400);
+        }
 
     </script>
 
