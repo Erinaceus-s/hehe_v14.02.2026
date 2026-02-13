@@ -488,6 +488,7 @@
         let charIndex = 0;
         let soundToggle = true;
         let videoInserted = false;
+        let heartbeatInterval = null;
 
         /* ⭐ создаём звёзды */
         const starfieldBack = document.getElementById("starfield-back");
@@ -752,9 +753,12 @@
                 }
 
                 beat();
-                setInterval(beat, 1000);
+
+                // сохраняем интервал
+                heartbeatInterval = setInterval(beat, 1000);
             }
         }
+
 
         // 🔄 пытаемся включить параллакс сразу
 
@@ -834,44 +838,49 @@
 
             sequenceImg.addEventListener("click", () => {
 
-                // 🔊 звук при каждом клике по step
+                // 🔊 звук
                 clickSound.currentTime = 0;
                 clickSound.play().catch(() => { });
 
-                currentStep++;
-
-                if (currentStep < images.length) {
+                // если мы еще НЕ на последнем шаге
+                if (currentStep < images.length - 1) {
+                    currentStep++;
                     sequenceImg.src = images[currentStep];
+                    return;
                 }
 
-                if (currentStep === images.length - 1) {
+                // 👉 если уже показан step4 — следующий клик открывает центр
+                sequenceImg.style.display = "none";
 
-                    sequenceImg.style.display = "none";
+                // скрываем старый финал
+                textElement.style.display = "none";
+                heart.style.display = "none";
+                spaceSound.pause();
 
-                    // скрываем старый финал
-                    textElement.style.display = "none";
-                    heart.style.display = "none";
-                    spaceSound.pause();
-                    navigator.vibrate(0);
-
-                    // показываем центр-сцену
-                    const centerStage = document.getElementById("center-stage");
-                    const stepImg = document.getElementById("center-step4");
-
-                    centerStage.style.display = "flex";
-
-                    // перезапуск анимации
-                    stepImg.classList.remove("step-animate");
-                    void stepImg.offsetWidth; // force reflow
-                    stepImg.classList.add("step-animate");
-
-                    createHeartConstellation();
-
+                // остановить вибрацию полностью
+                navigator.vibrate(0);
+                if (heartbeatInterval) {
+                    clearInterval(heartbeatInterval);
+                    heartbeatInterval = null;
                 }
 
+                // показываем центр
+                const centerStage = document.getElementById("center-stage");
+                const stepImg = document.getElementById("center-step4");
 
+                centerStage.style.display = "flex";
 
+                // анимация появления
+                stepImg.classList.remove("step-animate");
+                void stepImg.offsetWidth;
+                stepImg.classList.add("step-animate");
+
+                createHeartConstellation();
             });
+
+
+
+
 
         }
 
