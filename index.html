@@ -344,6 +344,7 @@
             justify-content: center;
             gap: 25px;
             z-index: 20;
+            transform: translateY(-15%);
         }
 
         #center-form {
@@ -418,6 +419,141 @@
             opacity: 0;
             transition: opacity 0.25s ease;
         }
+
+        .constellation-letter {
+            display: inline-block;
+            position: relative;
+            font-weight: bold;
+            letter-spacing: 4px;
+            color: white;
+            text-shadow: 0 0 6px white, 0 0 12px #ff6bb5;
+            animation: letterTwinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes letterTwinkle {
+            0% {
+                opacity: 0.7;
+                text-shadow: 0 0 6px white, 0 0 12px #ff6bb5;
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 14px white, 0 0 28px #ff6bb5;
+            }
+
+            100% {
+                opacity: 0.7;
+                text-shadow: 0 0 6px white, 0 0 12px #ff6bb5;
+            }
+        }
+
+        .constellation-letter::after {
+            content: "•";
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 10px;
+            opacity: 0.6;
+        }
+
+        .word-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px white, 0 0 15px #ff6bb5;
+            opacity: 0;
+            animation: starAppear 0.6s ease forwards;
+        }
+
+        @keyframes starAppear {
+            from {
+                opacity: 0;
+                transform: scale(0.2);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .word-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.5);
+            transform-origin: left center;
+            opacity: 0;
+        }
+
+        .word-letter {
+            position: absolute;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 8px white, 0 0 20px #ff6bb5;
+            opacity: 0;
+            animation: wordTwinkle 3s ease-in-out infinite;
+        }
+
+        @keyframes wordTwinkle {
+            0% {
+                opacity: 0.7;
+                text-shadow: 0 0 6px white, 0 0 12px #ff6bb5;
+            }
+
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 14px white, 0 0 28px #ff6bb5;
+            }
+
+            100% {
+                opacity: 0.7;
+                text-shadow: 0 0 6px white, 0 0 12px #ff6bb5;
+            }
+        }
+
+        @keyframes letterFade {
+            to {
+                opacity: 1;
+            }
+        }
+
+        .dust {
+            position: absolute;
+            width: 2px;
+            height: 2px;
+            background: white;
+            border-radius: 50%;
+            opacity: 0;
+            box-shadow: 0 0 6px white;
+        }
+
+        .word-star {
+            position: absolute;
+            width: 4px;
+            height: 4px;
+            background: white;
+            border-radius: 50%;
+            box-shadow: 0 0 8px white, 0 0 15px #ff6bb5;
+        }
+
+        .word-letter {
+            position: absolute;
+            font-weight: bold;
+            color: white;
+            text-shadow: 0 0 8px white, 0 0 20px #ff6bb5;
+            opacity: 0;
+        }
+
+        .word-line {
+            position: absolute;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.6);
+            transform-origin: left center;
+            opacity: 0;
+        }
     </style>
 </head>
 
@@ -437,18 +573,20 @@
     </div>
 
     <audio id="spaceSound" loop>
-        <source src="https://www.soundjay.com/mechanical/sounds/smoke-detector-1.mp3">
+        <source src="magic.mp3">
     </audio>
 
     <audio id="typeSound1">
-        <source src="https://www.soundjay.com/mechanical/sounds/smoke-detector-1.mp3">
+        <source src="typewriter-1.mp3">
     </audio>
 
     <audio id="typeSound2">
-        <source src="https://www.soundjay.com/mechanical/sounds/smoke-detector-1.mp3">
+        <source src="typewriter-2.mp3">
     </audio>
 
-
+    <audio id="starSound">
+        <source src="star.mp3">
+    </audio>
 
     <div id="final-sequence" style="display:none;">
         <img id="sequence-img" src="step1.png">
@@ -475,13 +613,14 @@
         const spaceSound = document.getElementById("spaceSound");
         const typeSound1 = document.getElementById("typeSound1");
         const typeSound2 = document.getElementById("typeSound2");
+        const starSound = document.getElementById("starSound");
         const clickSound = typeSound2;
 
 
         const messages = [
-            "текст 1",
-            "текст 2",
-            "текст 3"
+            "Сааааш",
+            "а знаешь чтооо?",
+            "а ти мине нраааавишься"
         ];
 
         let messageIndex = 0;
@@ -702,8 +841,8 @@
                 startStarfall();
                 startHeartbeatVibration();
 
-                setTimeout(startFinalSequence, 10000);
-
+                setTimeout(startFinalSequence, 1);
+                // время задержки
 
             }
         }
@@ -743,21 +882,21 @@
         }
 
         /* 💓 вибрация */
-        
+
         function startHeartbeatVibration() {
-                if (!("vibrate" in navigator)) return;
+            if (!("vibrate" in navigator)) return;
 
-                // если уже работает — не запускаем снова
-                if (heartbeatInterval) return;
+            // если уже работает — не запускаем снова
+            if (heartbeatInterval) return;
 
-                function beat() {
-                    navigator.vibrate(120);
-                    setTimeout(() => navigator.vibrate(80), 300);
-                }
-
-                beat();
-                heartbeatInterval = setInterval(beat, 1000);
+            function beat() {
+                navigator.vibrate(120);
+                setTimeout(() => navigator.vibrate(80), 300);
             }
+
+            beat();
+            heartbeatInterval = setInterval(beat, 1000);
+        }
 
 
 
@@ -997,7 +1136,7 @@
             clickSound.play().catch(() => { });
 
             if (input === "тест") {
-                text.textContent = "ответ ответ";
+                renderConstellationTextAdvanced("ответ ответ");
                 triggerStarFlash();
                 starExplosion();
                 text.style.textShadow =
@@ -1038,10 +1177,182 @@
             }
         }
 
+        function renderConstellationText(message) {
+
+            const container = document.getElementById("constellation-text");
+            container.innerHTML = "";
+
+            for (let char of message) {
+
+                const span = document.createElement("span");
+                span.classList.add("constellation-letter");
+
+                // если пробел — оставляем как есть
+                if (char === " ") {
+                    span.innerHTML = "&nbsp;";
+                } else {
+                    span.textContent = char;
+                }
+
+                // лёгкая "ломаность"
+                const offsetX = Math.random() * 6 - 3;
+                const offsetY = Math.random() * 6 - 3;
+
+                span.style.transform = `translate(${offsetX}px, ${offsetY}px) rotate(${Math.random() * 6 - 3}deg)`;
+                span.style.animationDuration = (Math.random() * 3 + 2) + "s";
+                span.style.animationDelay = (Math.random() * 2) + "s";
+                container.appendChild(span);
+            }
+        }
+
+        function renderConstellationTextAdvanced(message) {
+
+            const box = document.getElementById("constellation-text");
+            box.innerHTML = "";
+
+            const startX = 40;
+            const startY = 100;
+            const spacing = 26;
+
+            const letters = [];
+
+            for (let i = 0; i < message.length; i++) {
+
+                if (message[i] === " ") continue;
+
+                const jitterX = Math.random() * 10 - 5;
+                const jitterY = Math.random() * 10 - 5;
+
+                const x = startX + i * spacing + jitterX;
+                const y = startY + jitterY;
+
+                letters.push({ x, y, char: message[i] });
+
+                // 🌫 создаём пыль
+                for (let d = 0; d < 12; d++) {
+
+                    const dust = document.createElement("div");
+                    dust.classList.add("dust");
+
+                    const randomX = Math.random() * 300;
+                    const randomY = Math.random() * 200;
+
+                    dust.style.left = randomX + "px";
+                    dust.style.top = randomY + "px";
+
+                    box.appendChild(dust);
+
+                    dust.animate(
+                        [
+                            { opacity: 0, transform: "scale(0.5)" },
+                            { opacity: 1 },
+                            { left: x + "px", top: y + "px", opacity: 1 }
+                        ],
+                        {
+                            duration: 1200,
+                            easing: "ease-out",
+                            fill: "forwards"
+                        }
+                    );
+                }
+            }
+
+            // 🔊 звук появления
+            starSound.currentTime = 0;
+            starSound.volume = 0.5;
+            starSound.play().catch(() => { });
+
+            // ✨ через 1.2с создаём звёзды
+            setTimeout(() => {
+
+                letters.forEach(letter => {
+
+                    const star = document.createElement("div");
+                    star.classList.add("word-star");
+
+                    star.style.left = letter.x + "px";
+                    star.style.top = letter.y + "px";
+
+                    box.appendChild(star);
+                });
+
+            }, 1200);
+
+            // ✨ через 1.6с рисуем линии и сразу показываем буквы
+            setTimeout(() => {
+
+                letters.forEach((letter, i) => {
+
+                    setTimeout(() => {
+
+                        // ---------- ПОКАЗ БУКВЫ ----------
+                        const l = document.createElement("div");
+                        l.classList.add("word-letter");
+
+                        l.textContent = letter.char;
+
+                        l.style.left = letter.x - 6 + "px";
+                        l.style.top = letter.y - 18 + "px";
+
+                        l.animate(
+                            [
+                                { opacity: 0, transform: "scale(0.5)" },
+                                { opacity: 1, transform: "scale(1)" }
+                            ],
+                            {
+                                duration: 600,
+                                fill: "forwards"
+                            }
+                        );
+
+                        box.appendChild(l);
+
+                        // ---------- РИСУЕМ ЛИНИЮ (если не последняя буква) ----------
+                        if (i < letters.length - 1) {
+
+                            const x1 = letters[i].x;
+                            const y1 = letters[i].y;
+                            const x2 = letters[i + 1].x;
+                            const y2 = letters[i + 1].y;
+
+                            const dx = x2 - x1;
+                            const dy = y2 - y1;
+
+                            const length = Math.sqrt(dx * dx + dy * dy);
+                            const angle = Math.atan2(dy, dx) * 180 / Math.PI;
+
+                            const line = document.createElement("div");
+                            line.classList.add("word-line");
+
+                            line.style.width = length + "px";
+                            line.style.left = x1 + "px";
+                            line.style.top = y1 + "px";
+
+                            box.appendChild(line);
+
+                            line.animate(
+                                [
+                                    { transform: `scaleX(0) rotate(${angle}deg)`, opacity: 0 },
+                                    { transform: `scaleX(1) rotate(${angle}deg)`, opacity: 1 }
+                                ],
+                                {
+                                    duration: 400,
+                                    easing: "ease-out",
+                                    fill: "forwards"
+                                }
+                            );
+                        }
+
+                    }, i * 250); // задержка между буквами
+
+                });
+
+            }, 2000);
+            
+        }
+
     </script>
 
 </body>
 
-
 </html>
-
