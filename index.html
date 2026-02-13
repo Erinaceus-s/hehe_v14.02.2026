@@ -239,15 +239,6 @@
         }
 
 
-
-
-        #constellation-box {
-            margin-top: 40px;
-            width: 320px;
-            height: 280px;
-            position: relative;
-        }
-
         #constellation-text {
             position: absolute;
             inset: 0;
@@ -494,7 +485,6 @@
             color: white;
             text-shadow: 0 0 8px white, 0 0 20px #ff6bb5;
             opacity: 0;
-            animation: wordTwinkle 3s ease-in-out infinite;
         }
 
         @keyframes wordTwinkle {
@@ -539,20 +529,35 @@
             box-shadow: 0 0 8px white, 0 0 15px #ff6bb5;
         }
 
-        .word-letter {
-            position: absolute;
-            font-weight: bold;
-            color: white;
-            text-shadow: 0 0 8px white, 0 0 20px #ff6bb5;
-            opacity: 0;
-        }
-
         .word-line {
             position: absolute;
             height: 1px;
             background: rgba(255, 255, 255, 0.6);
             transform-origin: left center;
             opacity: 0;
+        }
+
+        #constellation-box {
+            margin-top: 40px;
+            width: 320px;
+            height: 280px;
+            position: relative;
+
+            transform-origin: center center;
+        }
+
+        @keyframes heartBreath {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.04);
+            }
+
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
@@ -564,7 +569,7 @@
 
 
     <div class="start-screen" onclick="startExperience()">
-        тык туть 💫
+        место, чтоб сделать буп 💫
     </div>
 
     <div class="container" id="main" style="display:none;">
@@ -585,7 +590,7 @@
     </audio>
 
     <audio id="starSound">
-        <source src="star.mp3">
+        <source src="sparkle.mp3">
     </audio>
 
     <div id="final-sequence" style="display:none;">
@@ -618,15 +623,14 @@
 
 
         const messages = [
-            "текст 1",
-            "текст 2",
-            "текст 3"
+            "Сааааш",
+            "а знаешь чтооо?",
+            "а ти мине нраааавишься"
         ];
 
         let messageIndex = 0;
         let charIndex = 0;
         let soundToggle = true;
-        let videoInserted = false;
         let heartbeatInterval = null;
 
         /* ⭐ создаём звёзды */
@@ -762,9 +766,8 @@
 
                 textElement.innerHTML += messages[messageIndex].charAt(charIndex);
                 if (
-                    messageIndex === 0 &&
-                    charIndex === messages[0].length - 1 &&
-                    !videoInserted
+                    (messageIndex === 0 && charIndex === messages[0].length - 1) ||
+                    (messageIndex === 2 && charIndex === messages[2].length - 1)
                 ) {
                     const video = document.createElement("video");
                     video.src = "kitty.mp4";
@@ -896,6 +899,13 @@
 
             beat();
             heartbeatInterval = setInterval(beat, 1000);
+        }
+
+        function softVibrate() {
+            if (!("vibrate" in navigator)) return;
+
+            // очень лёгкая короткая вибрация
+            navigator.vibrate(12);
         }
 
 
@@ -1048,10 +1058,22 @@
                     - 2 * Math.cos(3 * t)
                     - Math.cos(4 * t);
 
-                const jitter = Math.random() * 6 - 3;
+                // расстояние точки от центра сердца
+                const distanceFromCenter = Math.sqrt(x * x + y * y);
 
-                const posX = 150 + x * scale + jitter;
-                const posY = 120 - y * scale + jitter;
+                // нормализуем (примерно 0–1)
+                const normalized = distanceFromCenter / 20;
+
+                // сильнее хаос по краям
+                // очень мягкий живой разброс
+                const jitterStrength = 11 * normalized;
+
+                const jitterX = (Math.random() - 0.5) * jitterStrength;
+                const jitterY = (Math.random() - 0.5) * jitterStrength;
+
+                // без радиального искажения формы
+                const posX = 150 + x * scale + jitterX;
+                const posY = 120 - y * scale + jitterY;
 
                 const star = document.createElement("div");
                 star.classList.add("constellation-star");
@@ -1296,16 +1318,18 @@
 
                         l.animate(
                             [
-                                { opacity: 0, transform: "scale(0.5)" },
-                                { opacity: 1, transform: "scale(1)" }
+                                { opacity: 0, filter: "blur(6px)" },
+                                { opacity: 1, filter: "blur(0px)" }
                             ],
                             {
-                                duration: 600,
+                                duration: 500,
+                                easing: "ease-out",
                                 fill: "forwards"
                             }
                         );
 
                         box.appendChild(l);
+                        softVibrate();
 
                         // ---------- РИСУЕМ ЛИНИЮ (если не последняя буква) ----------
                         if (i < letters.length - 1) {
@@ -1348,12 +1372,11 @@
                 });
 
             }, 2000);
-            
+
         }
 
     </script>
 
 </body>
-
 
 </html>
