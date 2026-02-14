@@ -843,7 +843,7 @@
                 startStarfall();
                 startHeartbeatVibration();
 
-                setTimeout(startFinalSequence, 1);
+                setTimeout(startFinalSequence, 10000);
                 // время задержки
 
             }
@@ -1156,15 +1156,37 @@
             clickSound.currentTime = 0;
             clickSound.play().catch(() => { });
 
-            if (input === "тест") {
-                renderConstellationTextAdvanced("ответ ответ");
+            if (input === "соскучился") {
+
+                renderConstellationTextAdvanced("а я сильней");
                 triggerStarFlash();
                 starExplosion();
+
                 text.style.textShadow =
                     "0 0 20px #ff6bb5, 0 0 40px #ff1493";
+
+            } else if (input === "выпускной") {
+
+                renderConstellationTextAdvanced("урок вальса");
+                triggerStarFlash();
+                starExplosion();
+
+                text.style.textShadow =
+                    "0 0 20px #ff6bb5, 0 0 40px #ff1493";
+
+            } else if (input === "14.02.2026") {
+
+                renderConstellationTextAdvanced("Ти самый замечательновый");
+                triggerStarFlash();
+                starExplosion();
+
+                text.style.textShadow =
+                    "0 0 20px #ff6bb5, 0 0 40px #ff1493";
+
             } else {
                 text.textContent = "";
             }
+
         });
 
 
@@ -1370,7 +1392,7 @@
 
                 });
 
-            }, 2000);
+            }, 10000);
 
         }
 
